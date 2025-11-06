@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Patient Dashboard";
+}
+
+<h2>Welcome to your Dashboard</h2>
+
+<div>
+    <p>Hello, @Context.Session.GetString("UserName") 👋</p>
+    <p>Email: @Context.Session.GetString("UserEmail")</p>
+
+    <hr />
+    <p>This is your Patient Dashboard page.</p>
+
+    <a href="/Account/Logout" class="btn btn-danger">Logout</a>
+</div>

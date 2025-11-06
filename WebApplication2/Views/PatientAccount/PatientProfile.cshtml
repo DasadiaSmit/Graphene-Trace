@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Patient Profile";
+}
+
+<h2>Patient Profile</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div style="color:red">@ViewBag.Error</div>
+}
+@if (ViewBag.Message != null)
+{
+    <div style="color:green">@ViewBag.Message</div>
+}
+
+<form asp-action="UpdateProfile" asp-controller="PatientAccount" method="post">
+    <div>
+        <label>Email</label><br />
+        <input type="text" name="Email" value="@ViewBag.Email" readonly />
+    </div>
+    <div>
+        <label>Password</label><br />
+        <input type="password" name="Password" value="@ViewBag.Password" />
+    </div>
+    <div>
+        <label>Name</label><br />
+        <input type="text" name="Name" value="@ViewBag.Name" />
+    </div>
+    <div>
+        <label>Contact</label><br />
+        <input type="text" name="Contact" value="@ViewBag.Contact" />
+    </div>
+    <div>
+        <label>Address</label><br />
+        <input type="text" name="Address" value="@ViewBag.Address" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
