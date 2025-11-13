@@ -2,25 +2,28 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebApplication2.Models
+namespace GrapheneTrace.Models
 {
     public class CommentReply
     {
         [Key]
         public long ReplyID { get; set; }
 
+        // ✅ Foreign Keys
         public long CommentID { get; set; }
         public int ClinicianID { get; set; }
 
         [Required]
-        public string Text { get; set; } = default!;
+        [StringLength(1000)]
+        public string Text { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        // ✅ Navigation Properties
         [ForeignKey("CommentID")]
-        public Comment Comment { get; set; } = default!;
+        public Comment? Comment { get; set; }
 
         [ForeignKey("ClinicianID")]
-        public User Clinician { get; set; } = default!;
+        public User? Clinician { get; set; }
     }
 }

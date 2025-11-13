@@ -1,0 +1,136 @@
+﻿@{
+ViewData["Title"] = "Patient Dashboard";
+}
+
+<h1>Graphene Trace – Patient Dashboard</h1>
+
+<!-- ========================= -->
+<!-- 1. WAVEFORM LINE CHART -->
+<!-- ========================= -->
+<hr />
+<h2 style="margin-top:40px;">Sensor Waveform (Electrode 0.14)</h2>
+
+<div style="max-width:1000px; margin:auto; padding:20px;">
+	<canvas id="waveChart" height="300"></canvas>
+</div>
+
+<!-- Chart.js v4 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+	// Waveform uses Temperature column (index 0 of each row)
+	const waveData = JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.HeatmapData))');
+
+	const tempValues = waveData.map(r => r[0]);  // Temperature for waveform
+	const timeLabelsWave = waveData.map((r, i) => "T" + (i + 1));
+
+	const waveCtx = document.getElementById('waveChart').getContext("2d");
+
+	new Chart(waveCtx, {
+	type: "line",
+	data: {
+	labels: timeLabelsWave,
+	datasets: [{
+	label: "Electrode 0.14",
+	data: tempValues,
+	borderColor: "#3b82f6",
+	borderWidth: 2,
+	tension: 0.4,
+	fill: false,
+	pointRadius: 3
+	}]
+	},
+	options: {
+	responsive: true,
+	scales: {
+	y: {
+	title: { display: true, text: "Intensity" }
+	},
+	x: {
+	title: { display: true, text: "Time" }
+	}
+	}
+	}
+	});
+</script>
+
+
+
+
+<!-- ========================= -->
+<!-- 2. HEATMAP SECTION -->
+<!-- ========================= -->
+<hr />
+<h2 style="margin-top:40px;">Sensor Heatmap</h2>
+
+<!-- Matrix Plugin v2 -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.0"></script>
+
+<div style="max-width:1000px; margin:auto; padding:20px;">
+	<canvas id="heatmapChart" height="300"></canvas>
+</div>
+
+<script>
+	const rawData = JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.HeatmapData))');
+
+	const sensorLabels = ["Temperature", "Heart Rate", "Oxygen"];
+	const timeLabels = rawData.map((x, i) => "T" + (i + 1));
+
+	let matrixData = [];
+	rawData.forEach((row, rowIndex) =>
+	row.forEach((value, colIndex) =>
+	matrixData.push({
+	x: sensorLabels[colIndex],
+	y: timeLabels[rowIndex],
+	v: value
+	})
+	)
+	);
+
+	function getColor(v) {
+	if (v < 30) return "rgba(0, 132, 255, 0.9)";
+        if (v < 50) return "rgba(0, 200, 140, 0.9)";
+        if (v < 70) return "rgba(255, 210, 0, 0.9)";
+        return "rgba(255, 60, 60, 0.95)";
+    }
+
+    const ctx = document.getElementById('heatmapChart').getContext("2d");
+
+    new Chart(ctx, {
+        type: "matrix",
+        data: {
+            datasets: [{
+                label: "Sensor Heatmap",
+                data: matrixData,
+                backgroundColor: (ctx) =>
+                    getColor(ctx.dataset.data[ctx.dataIndex].v),
+                borderWidth: 1,
+                width: ctx => {
+                    const area = ctx.chart.chartArea;
+                    return area ? area.width / sensorLabels.length - 4 : 0;
+                },
+                height: ctx => {
+                    const area = ctx.chart.chartArea;
+                    return area ? area.height / timeLabels.length - 4 : 0;
+                }
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    type: "category",
+                    labels: sensorLabels,
+                    title: { display: true, text: "Sensor Type" }
+                },
+                y: {
+                    type: "category",
+                    labels: timeLabels,
+                    title: { display: true, text: "Reading Index" }
+                }
+            }
+        }
+    });
+</script>

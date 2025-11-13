@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebApplication2.Data;
+using GrapheneTrace.Data;
 
 #nullable disable
 
-namespace WebApplication2.Migrations
+namespace GrapheneTrace.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20251030001103_InitialCreate")]
@@ -25,7 +25,7 @@ namespace WebApplication2.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WebApplication2.Models.Alert", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.Alert", b =>
                 {
                     b.Property<long>("AlertID")
                         .ValueGeneratedOnAdd()
@@ -62,7 +62,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("Alerts");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.ClinicianPatient", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.ClinicianPatient", b =>
                 {
                     b.Property<int>("ClinicianID")
                         .HasColumnType("int");
@@ -80,7 +80,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("ClinicianPatients");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.Comment", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.Comment", b =>
                 {
                     b.Property<long>("CommentID")
                         .ValueGeneratedOnAdd()
@@ -110,7 +110,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.CommentReply", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.CommentReply", b =>
                 {
                     b.Property<long>("ReplyID")
                         .ValueGeneratedOnAdd()
@@ -140,7 +140,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("CommentReplies");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.FrameMetric", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.FrameMetric", b =>
                 {
                     b.Property<long>("MetricID")
                         .ValueGeneratedOnAdd()
@@ -168,7 +168,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("FrameMetrics");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.Log", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.Log", b =>
                 {
                     b.Property<long>("LogID")
                         .ValueGeneratedOnAdd()
@@ -196,7 +196,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("Logs");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.SensorFrame", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.SensorFrame", b =>
                 {
                     b.Property<long>("DataID")
                         .ValueGeneratedOnAdd()
@@ -224,7 +224,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("SensorFrames");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.User", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.User", b =>
                 {
                     b.Property<int>("UserID")
                         .ValueGeneratedOnAdd()
@@ -264,14 +264,14 @@ namespace WebApplication2.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.Alert", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.Alert", b =>
                 {
-                    b.HasOne("WebApplication2.Models.SensorFrame", "Data")
+                    b.HasOne("GrapheneTrace.Models.SensorFrame", "Data")
                         .WithMany()
                         .HasForeignKey("DataID")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("WebApplication2.Models.User", "Patient")
+                    b.HasOne("GrapheneTrace.Models.User", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientID")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -282,15 +282,15 @@ namespace WebApplication2.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.ClinicianPatient", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.ClinicianPatient", b =>
                 {
-                    b.HasOne("WebApplication2.Models.User", "Clinician")
+                    b.HasOne("GrapheneTrace.Models.User", "Clinician")
                         .WithMany("ClinicianLinks")
                         .HasForeignKey("ClinicianID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApplication2.Models.User", "Patient")
+                    b.HasOne("GrapheneTrace.Models.User", "Patient")
                         .WithMany("PatientLinks")
                         .HasForeignKey("PatientID")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -301,14 +301,14 @@ namespace WebApplication2.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.Comment", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.Comment", b =>
                 {
-                    b.HasOne("WebApplication2.Models.SensorFrame", "Data")
+                    b.HasOne("GrapheneTrace.Models.SensorFrame", "Data")
                         .WithMany()
                         .HasForeignKey("DataID")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("WebApplication2.Models.User", "Patient")
+                    b.HasOne("GrapheneTrace.Models.User", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientID")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -319,15 +319,15 @@ namespace WebApplication2.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.CommentReply", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.CommentReply", b =>
                 {
-                    b.HasOne("WebApplication2.Models.User", "Clinician")
+                    b.HasOne("GrapheneTrace.Models.User", "Clinician")
                         .WithMany()
                         .HasForeignKey("ClinicianID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApplication2.Models.Comment", "Comment")
+                    b.HasOne("GrapheneTrace.Models.Comment", "Comment")
                         .WithMany("Replies")
                         .HasForeignKey("CommentID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -338,20 +338,20 @@ namespace WebApplication2.Migrations
                     b.Navigation("Comment");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.FrameMetric", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.FrameMetric", b =>
                 {
-                    b.HasOne("WebApplication2.Models.SensorFrame", "Data")
+                    b.HasOne("GrapheneTrace.Models.SensorFrame", "Data")
                         .WithOne("Metric")
-                        .HasForeignKey("WebApplication2.Models.FrameMetric", "DataID")
+                        .HasForeignKey("GrapheneTrace.Models.FrameMetric", "DataID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Data");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.Log", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.Log", b =>
                 {
-                    b.HasOne("WebApplication2.Models.User", "User")
+                    b.HasOne("GrapheneTrace.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -359,9 +359,9 @@ namespace WebApplication2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.SensorFrame", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.SensorFrame", b =>
                 {
-                    b.HasOne("WebApplication2.Models.User", "Patient")
+                    b.HasOne("GrapheneTrace.Models.User", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,17 +370,17 @@ namespace WebApplication2.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.Comment", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.Comment", b =>
                 {
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.SensorFrame", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.SensorFrame", b =>
                 {
                     b.Navigation("Metric");
                 });
 
-            modelBuilder.Entity("WebApplication2.Models.User", b =>
+            modelBuilder.Entity("GrapheneTrace.Models.User", b =>
                 {
                     b.Navigation("ClinicianLinks");
 

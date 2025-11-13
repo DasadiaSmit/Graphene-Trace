@@ -1,15 +1,84 @@
-﻿@{
-    ViewData["Title"] = "Patient Dashboard";
-}
+﻿<!-- Heatmap Section -->
+<hr />
+<h2 style="margin-top:40px;">Sensor Heatmap</h2>
 
-<h2>Welcome to your Dashboard</h2>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div>
-    <p>Hello, @Context.Session.GetString("UserName") 👋</p>
-    <p>Email: @Context.Session.GetString("UserEmail")</p>
+<!-- Matrix Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.2.0"></script>
 
-    <hr />
-    <p>This is your Patient Dashboard page.</p>
-
-    <a href="/Account/Logout" class="btn btn-danger">Logout</a>
+<div style="max-width:1000px; margin:auto; padding:20px;">
+    <canvas id="heatmapChart" height="400"></canvas>
 </div>
+
+<script>
+    // Data from controller
+    const rawData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.HeatmapData));
+
+    if (!rawData || rawData.length === 0) {
+        console.error("Heatmap: No data found.");
+    }
+
+    // Labels
+    const sensorLabels = ["Temperature", "Heart Rate", "Oxygen"];
+    const timeLabels = rawData.map((x, i) => "T" + (i + 1));
+
+    // Convert to matrix format
+    let matrixData = [];
+
+    rawData.forEach((row, rowIndex) => {
+        row.forEach((value, colIndex) => {
+            matrixData.push({
+                x: sensorLabels[colIndex],
+                y: timeLabels[rowIndex],
+                v: value
+            });
+        });
+    });
+
+    // Color scale
+    function getColor(v) {
+        if (v < 30) return "rgba(0, 132, 255, 0.9)";
+        if (v < 50) return "rgba(0, 200, 140, 0.9)";
+        if (v < 70) return "rgba(255, 210, 0, 0.9)";
+        return "rgba(255, 60, 60, 0.95)";
+    }
+
+    // Draw heatmap
+    const ctx = document.getElementById('heatmapChart').getContext("2d");
+
+    new Chart(ctx, {
+        type: "matrix",
+        data: {
+            datasets: [{
+                label: "Sensor Heatmap",
+                data: matrixData,
+                backgroundColor: (ctx) =>
+                    getColor(ctx.dataset.data[ctx.dataIndex].v),
+                borderWidth: 1,
+                width: (ctx) =>
+                    ctx.chart.chartArea.width / sensorLabels.length - 4,
+                height: (ctx) =>
+                    ctx.chart.chartArea.height / timeLabels.length - 4
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    type: "category",
+                    labels: sensorLabels,
+                    title: { display: true, text: "Sensor Type" }
+                },
+                y: {
+                    type: "category",
+                    labels: timeLabels,
+                    title: { display: true, text: "Reading Index" }
+                }
+            }
+        }
+    });
+</script>

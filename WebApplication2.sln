@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36109.1 d17.14
+VisualStudioVersion = 17.14.36109.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication2", "WebApplication2\WebApplication2.csproj", "{0C811984-24C6-40DE-BAE9-73FF841D63FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrapheneTrace", "WebApplication2\GrapheneTrace.csproj", "{0C811984-24C6-40DE-BAE9-73FF841D63FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

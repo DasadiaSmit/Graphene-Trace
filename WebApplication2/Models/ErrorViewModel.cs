@@ -1,4 +1,4 @@
-namespace WebApplication2.Models
+namespace GrapheneTrace.Models
 {
     public class ErrorViewModel
     {
