@@ -23,6 +23,7 @@ namespace GrapheneTrace.Models
         [ForeignKey("PatientID")]
         public User Patient { get; set; } = default!;
 
-        public FrameMetric? Metric { get; set; }
+        public Metric Metric { get; set; }
+
     }
 }

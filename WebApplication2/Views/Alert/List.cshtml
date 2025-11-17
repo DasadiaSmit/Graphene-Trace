@@ -1,0 +1,23 @@
+﻿@model IEnumerable<GrapheneTrace.Models.Alert>
+
+<h2 class="mb-3">Alert History</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Peak Value</th>
+            <th>Message</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.Value</td>
+                <td>@a.Message</td>
+                <td>@a.Timestamp.ToString("dd MMM yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>

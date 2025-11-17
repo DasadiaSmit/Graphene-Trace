@@ -1,84 +1,56 @@
-﻿<!-- Heatmap Section -->
-<hr />
-<h2 style="margin-top:40px;">Sensor Heatmap</h2>
+﻿@{
+ViewData["Title"] = "Dashboard";
+}
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="container mt-4">
 
-<!-- Matrix Plugin -->
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.2.0"></script>
+	<!-- AUTO ALERT BOX -->
+	<div id="alertBox"
+         style="display:none; padding:20px; background-color:#ff3b30; color:white;
+         border-radius:10px; font-size:20px; font-weight:bold; margin-bottom:20px;">
+	</div>
 
-<div style="max-width:1000px; margin:auto; padding:20px;">
-    <canvas id="heatmapChart" height="400"></canvas>
+	<h2>Patient Dashboard</h2>
+
+	<p>Emergency button will immediately notify your clinician.</p>
+
+	<!-- 🚨 EMERGENCY BUTTON -->
+	<button id="emergencyBtn"
+            style="padding:15px 25px; background-color:#d9534f; color:white; 
+            border:none; border-radius:8px; font-size:18px; cursor:pointer;">
+		🚨 SEND EMERGENCY ALERT
+	</button>
+
+	<div id="emergencyMsg" style="margin-top:20px; font-size:18px; font-weight:bold;"></div>
 </div>
 
 <script>
-    // Data from controller
-    const rawData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.HeatmapData));
+	function checkAlert() {
+	fetch('/Alert/CheckAlert')
+	.then(r => r.json())
+	.then(data => {
+	const box = document.getElementById('alertBox');
+	if (data.alert === true) {
+	box.style.display = "block";
+	box.innerHTML = "⚠️ " + data.message;
+	} else {
+	box.style.display = "none";
+	}
+	});
+	}
 
-    if (!rawData || rawData.length === 0) {
-        console.error("Heatmap: No data found.");
-    }
+	setInterval(checkAlert, 5000);
+	checkAlert();
 
-    // Labels
-    const sensorLabels = ["Temperature", "Heart Rate", "Oxygen"];
-    const timeLabels = rawData.map((x, i) => "T" + (i + 1));
-
-    // Convert to matrix format
-    let matrixData = [];
-
-    rawData.forEach((row, rowIndex) => {
-        row.forEach((value, colIndex) => {
-            matrixData.push({
-                x: sensorLabels[colIndex],
-                y: timeLabels[rowIndex],
-                v: value
-            });
-        });
-    });
-
-    // Color scale
-    function getColor(v) {
-        if (v < 30) return "rgba(0, 132, 255, 0.9)";
-        if (v < 50) return "rgba(0, 200, 140, 0.9)";
-        if (v < 70) return "rgba(255, 210, 0, 0.9)";
-        return "rgba(255, 60, 60, 0.95)";
-    }
-
-    // Draw heatmap
-    const ctx = document.getElementById('heatmapChart').getContext("2d");
-
-    new Chart(ctx, {
-        type: "matrix",
-        data: {
-            datasets: [{
-                label: "Sensor Heatmap",
-                data: matrixData,
-                backgroundColor: (ctx) =>
-                    getColor(ctx.dataset.data[ctx.dataIndex].v),
-                borderWidth: 1,
-                width: (ctx) =>
-                    ctx.chart.chartArea.width / sensorLabels.length - 4,
-                height: (ctx) =>
-                    ctx.chart.chartArea.height / timeLabels.length - 4
-            }]
-        },
-        options: {
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                x: {
-                    type: "category",
-                    labels: sensorLabels,
-                    title: { display: true, text: "Sensor Type" }
-                },
-                y: {
-                    type: "category",
-                    labels: timeLabels,
-                    title: { display: true, text: "Reading Index" }
-                }
-            }
-        }
-    });
+	// 🚨 EMERGENCY BUTTON LOGIC
+	document.getElementById("emergencyBtn").addEventListener("click", function () {
+	fetch('/Alert/Emergency', {
+	method: 'POST'
+	})
+	.then(r => r.json())
+	.then(data => {
+	document.getElementById("emergencyMsg").innerHTML =
+	"✔ " + data.message;
+	});
+	});
 </script>
